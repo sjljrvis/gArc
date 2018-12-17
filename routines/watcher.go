@@ -9,6 +9,7 @@ import (
 	"github.com/sjljrvis/gArch/helpers"
 )
 
+// DirWatcher  *is directory observer to watch file-events in directory
 func DirWatcher() {
 	err := helpers.CheckDir(os.Getenv("HOME") + "/gArch")
 	if err != nil {
@@ -21,13 +22,11 @@ func DirWatcher() {
 	}
 
 initwatcher:
-
 	log.Println("Adding watcher to directory")
 	log.Println(helpers.ListFiles(os.Getenv("HOME") + "/gArch"))
 	watcher, err := fsnotify.NewWatcher()
-	done := make(chan bool)
-
 	defer watcher.Close()
+	done := make(chan bool)
 
 	if err != nil {
 		log.Println("Error Occured in Watcher")
