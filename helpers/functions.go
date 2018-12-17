@@ -22,7 +22,6 @@ func GetMacAddress() (addr string) {
 }
 
 func CheckDir(dirname string) error {
-	println(dirname)
 	_, err := os.Stat(dirname)
 	if os.IsNotExist(err) {
 		return nil
