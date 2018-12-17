@@ -1,0 +1,16 @@
+{
+	"ImportPath": "github.com/sjljrvis/gArch",
+	"GoVersion": "go1.11",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/fsnotify/fsnotify",
+			"Comment": "v1.4.7-6-gccc981b",
+			"Rev": "ccc981bf80385c528a65fbfdd49bf2d8da22aa23"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "ad97f365e15054527b467150f898ec66d7f81e14"
+		}
+	]
+}
