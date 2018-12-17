@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	helpers "github.com/sjljrvis/gArch/helpers"
+	p2p "github.com/sjljrvis/gArch/p2p"
 	routines "github.com/sjljrvis/gArch/routines"
 )
 
@@ -19,6 +21,8 @@ func initLogger() {
 }
 
 func initDB() {
+	log.Printf(os.Getenv("client"))
+	log.Print(os.Getenv("destination"))
 	log.Println("Initializing node")
 	log.Println("Creating fileDB ")
 	log.Println("Sync nodes here")
@@ -37,5 +41,6 @@ func init() {
 func main() {
 	mac := helpers.GetMacAddress()
 	log.Println("MAC Address ->", mac)
+	go p2p.Start()
 	routines.DirWatcher()
 }
