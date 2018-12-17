@@ -1,83 +1,41 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
-	"path/filepath"
+	"time"
 
-	"github.com/fsnotify/fsnotify"
 	helpers "github.com/sjljrvis/gArch/helpers"
+	routines "github.com/sjljrvis/gArch/routines"
 )
+
+const (
+	//TimeFormat *generic time stamp foramt used in logger
+	TimeFormat = "Jan 2, 2006 at 3:04pm (MST)"
+)
+
+func initLogger() {
+	log.SetFlags(0)
+	log.SetPrefix("app | " + time.Now().Format(TimeFormat) + "| INFO : ")
+}
+
+func initDB() {
+	log.Println("Initializing node")
+	log.Println("Creating fileDB ")
+	log.Println("Sync nodes here")
+}
+
+func fetchPeers() {
+	log.Println("Fetch Peers from server")
+}
+
+func init() {
+	initLogger()
+	initDB()
+	fetchPeers()
+}
 
 func main() {
 	mac := helpers.GetMacAddress()
-	fmt.Println("MAC Address ->", mac)
-
-	dirWatcher()
-}
-
-func dirWatcher() {
-
-	err := helpers.CheckDir(os.Getenv("HOME") + "/gArch")
-	if err != nil {
-		log.Println(err)
-		goto initwatcher
-	} else {
-		fmt.Println("Creating Directory :" + os.Getenv("HOME") + "/gArch")
-		os.Mkdir(os.Getenv("HOME")+"/gArch", 0700)
-		goto initwatcher
-	}
-
-initwatcher:
-
-	log.Println("Adding watcher to directory")
-	watcher, err := fsnotify.NewWatcher()
-	done := make(chan bool)
-
-	defer watcher.Close()
-
-	if err != nil {
-		log.Println("Error Occured in Watcher")
-	}
-
-	go func() {
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
-				handleAction(event)
-
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				log.Println("error:", err)
-			}
-		}
-	}()
-
-	err = watcher.Add(os.Getenv("HOME") + "/gArch")
-	if err != nil {
-		log.Fatal(err)
-	}
-	<-done
-
-}
-
-func handleAction(event fsnotify.Event) {
-	fmt.Println("=====================================")
-	fmt.Println(event.Name, "---", event.Op)
-	files, err := filepath.Glob(os.Getenv("HOME") + "/gArch/*")
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, file := range files {
-		fmt.Println(file)
-	}
-	fmt.Println("=====================================")
-
-	fmt.Println("Take Action")
+	log.Println("MAC Address ->", mac)
+	routines.DirWatcher()
 }
