@@ -5,8 +5,10 @@ import (
 	"errors"
 	"net"
 	"os"
+	"path/filepath"
 )
 
+// GetMacAddress of current node
 func GetMacAddress() (addr string) {
 	interfaces, err := net.Interfaces()
 	if err == nil {
@@ -21,11 +23,20 @@ func GetMacAddress() (addr string) {
 	return
 }
 
+// CheckDir  *for checking directory
 func CheckDir(dirname string) error {
 	_, err := os.Stat(dirname)
 	if os.IsNotExist(err) {
 		return nil
-	} else {
-		return errors.New(dirname + " Already Exists")
 	}
+	return errors.New(dirname + " Already Exists")
+}
+
+// ListFiles  *for listing  files in directory
+func ListFiles(dirName string) ([]string, error) {
+	files, err := filepath.Glob(os.Getenv("HOME") + "/gArch/*")
+	if err != nil {
+		return nil, err
+	}
+	return files, nil
 }
