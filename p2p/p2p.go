@@ -22,7 +22,6 @@ func Start() {
 	sourcePort := flag.Int("sp", 0, "Source port number")
 	dest := flag.String("d", "", "Destination multiaddr string")
 	flag.Parse()
-	log.Println(*sourcePort)
 	var r io.Reader
 	r = mrand.New(mrand.NewSource(int64(*sourcePort)))
 	prvKey, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
@@ -56,6 +55,7 @@ func Start() {
 			panic("was not able to find actual local port")
 		}
 
+		fmt.Printf("Run './chat -d /ip4/111.125.208.243/tcp/%v/p2p/%s' on another console.\n", port, host.ID().Pretty())
 		fmt.Printf("Run './chat -d /ip4/127.0.0.1/tcp/%v/p2p/%s' on another console.\n", port, host.ID().Pretty())
 		fmt.Println("You can replace 127.0.0.1 with public IP as well.")
 		fmt.Printf("\nWaiting for incoming connection\n\n")
