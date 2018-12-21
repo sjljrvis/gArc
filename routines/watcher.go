@@ -23,7 +23,6 @@ func DirWatcher() {
 
 initwatcher:
 	log.Println("Adding watcher to directory")
-	log.Println(helpers.ListFiles(os.Getenv("HOME") + "/gArch"))
 	watcher, err := fsnotify.NewWatcher()
 	defer watcher.Close()
 	done := make(chan bool)
