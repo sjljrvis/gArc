@@ -17,8 +17,8 @@ import (
 	multiaddr "github.com/multiformats/go-multiaddr"
 )
 
-// Start * peer node at host machine
-func Start() {
+// Start1 * peer node at host machine
+func Start1() {
 	sourcePort := flag.Int("sp", 0, "Source port number")
 	dest := flag.String("d", "", "Destination multiaddr string")
 	flag.Parse()
