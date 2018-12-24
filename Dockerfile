@@ -4,6 +4,8 @@ LABEL stage=intermediate
 COPY . /go/src/github.com/sjljrvis/gArch/
 WORKDIR /go/src/github.com/sjljrvis/gArch
 
+RUN apk add pkgconfig
+RUN apk add gcc
 RUN go build -o gArch
 ENV PORT 3000
 EXPOSE 3000

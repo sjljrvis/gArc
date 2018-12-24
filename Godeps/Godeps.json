@@ -9,6 +9,10 @@
 			"Rev": "ccc981bf80385c528a65fbfdd49bf2d8da22aa23"
 		},
 		{
+			"ImportPath": "github.com/keroserene/go-webrtc",
+			"Rev": "ffbc9141f40ba580789ca2dadf1d62cb352187cc"
+		},
+		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "ad97f365e15054527b467150f898ec66d7f81e14"
 		}
