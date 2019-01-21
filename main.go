@@ -29,7 +29,7 @@ func initDB() {
 }
 
 func fetchPeers() {
-	log.Println("Fetch Peers from server")
+	log.Println("Fetch Peers from DHT")
 }
 
 func init() {
@@ -41,6 +41,6 @@ func init() {
 func main() {
 	mac := helpers.GetMacAddress()
 	log.Println("MAC Address ->", mac)
-	go p2p.Start()
+	p2p.Start()
 	routines.DirWatcher()
 }
