@@ -41,6 +41,6 @@ func init() {
 func main() {
 	mac := helpers.GetMacAddress()
 	log.Println("MAC Address ->", mac)
-	p2p.Start()
+	go p2p.Start()
 	routines.DirWatcher()
 }
