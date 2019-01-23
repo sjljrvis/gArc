@@ -22,19 +22,22 @@ func Start() {
 
 	peersFlag := flag.String("peers", "", "peers to connect to")
 	portFlag := flag.Int("port", 3000, "port to listen to")
-
+	natFlag := flag.Bool("nat", true, "Enable nat traversal")
 	flag.Parse()
 
 	port := uint16(*portFlag)
+	natEnabled := *natFlag
 	peers := strings.Split(*peersFlag, ",")
 	keys := ed25519.RandomKeyPair()
 	builder := network.NewBuilder()
 	builder.SetKeys(keys)
 	builder.SetAddress(network.FormatAddress(protocol, host, port))
-
-	nat.RegisterPlugin(builder)
+	if natEnabled {
+		nat.RegisterPlugin(builder)
+	}
 	builder.AddPlugin(new(backoff.Plugin))
 	builder.AddPlugin(new(discovery.Plugin))
+	// builder.AddPlugin(new(ChatPlugin))
 
 	net, err := builder.Build()
 	if err != nil {
