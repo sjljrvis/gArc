@@ -5,9 +5,8 @@ import (
 	"os"
 	"time"
 
+	files "github.com/sjljrvis/gArch/files"
 	helpers "github.com/sjljrvis/gArch/helpers"
-	p2p "github.com/sjljrvis/gArch/p2p"
-	routines "github.com/sjljrvis/gArch/routines"
 )
 
 const (
@@ -41,6 +40,6 @@ func init() {
 func main() {
 	mac := helpers.GetMacAddress()
 	log.Println("MAC Address ->", mac)
-	go p2p.Start()
-	routines.DirWatcher()
+	// go p2p.Forward()
+	files.DirWatcher()
 }

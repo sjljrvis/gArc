@@ -22,7 +22,7 @@ func Start() {
 
 	peersFlag := flag.String("peers", "", "peers to connect to")
 	portFlag := flag.Int("port", 3000, "port to listen to")
-	natFlag := flag.Bool("nat", true, "Enable nat traversal")
+	natFlag := flag.Bool("nat", false, "Enable nat traversal")
 	flag.Parse()
 
 	port := uint16(*portFlag)

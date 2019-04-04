@@ -25,7 +25,7 @@ func Forward() {
 
 	flag.Parse()
 
-	peers := *peersFlag
+	peers := strings.Split(*peersFlag, ",")
 	port := (*portFlag)
 
 	gateway, err := nat.DiscoverGateway()
@@ -60,23 +60,24 @@ func Forward() {
 	log.Println("internal_port", port, "external_port", externalPort, "external port now forwards to your local port")
 
 	if len(peers) > 0 {
-		go func() {
-			resolved, err := net.ResolveTCPAddr("tcp", peers)
-			if err != nil {
-				log.Panic(err)
+		for _, peer := range peers {
+			if len(peer) > 0 {
+				clientConn, err := net.Dial("tcp", peer)
+				if err != nil {
+					log.Fatal(err)
+				}
+				log.Println(clientConn)
+				_, err = clientConn.Write([]byte("hello"))
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
-			// localAddr, _ := net.ResolveTCPAddr("tcp", externalIP.String()+":"+strconv.Itoa(externalPort))
-			log.Println(">>>>>>>", "tcp", strconv.Itoa(externalPort))
-			conn, _ := net.DialTCP("tcp", nil, resolved)
-			fmt.Println("Hello", conn, resolved)
-		}()
+		}
 	}
-
 	resolveAddr, err := net.ResolveTCPAddr("tcp", "localhost:"+strconv.Itoa(port))
 	if err != nil {
 		log.Println("Please check Error in TCP Address", err)
 	}
-	fmt.Println("...........", resolveAddr)
 	ln, err := net.ListenTCP("tcp", resolveAddr)
 	conn, _ := ln.Accept()
 
