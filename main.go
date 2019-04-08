@@ -1,12 +1,15 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	files "github.com/sjljrvis/gArch/files"
 	helpers "github.com/sjljrvis/gArch/helpers"
+	network "github.com/sjljrvis/gArch/network"
 )
 
 const (
@@ -40,6 +43,15 @@ func init() {
 func main() {
 	mac := helpers.GetMacAddress()
 	log.Println("MAC Address ->", mac)
-	// go p2p.Forward()
+	portFlag := flag.Int("port", 3000, "Port to connect")
+	peersFlag := flag.String("peers", "", "list of peers")
+	flag.Parse()
+
+	port := *portFlag
+	peers := strings.Split(*peersFlag, ",")
+
+	log.Println("Peers can connect to address -> ", "127.0.0.1:", port)
+
+	go network.Init(port, peers)
 	files.DirWatcher()
 }

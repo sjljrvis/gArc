@@ -8,6 +8,12 @@ import (
 	"path/filepath"
 )
 
+type _File struct {
+	Name  string
+	Size  int64
+	IsDir bool
+}
+
 // GetMacAddress of current node
 func GetMacAddress() (addr string) {
 	interfaces, err := net.Interfaces()

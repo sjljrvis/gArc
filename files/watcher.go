@@ -1,6 +1,7 @@
 package files
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,15 +13,27 @@ import (
 	"github.com/sjljrvis/gArch/helpers"
 )
 
+// HomeDir is base directory for watching files
+var (
+	HomeDir = os.Getenv("HOME") + "/gArch"
+)
+
+const (
+	fileChunk = .5 * (1 << 20)
+)
+
 // DirWatcher  *is directory observer to watch file-events in directory
 func DirWatcher() {
-	err := helpers.CheckDir(os.Getenv("HOME") + "/gArch")
+	err := helpers.CheckDir(HomeDir)
 	if err != nil {
 		log.Println(err)
 		goto initwatcher
 	} else {
-		fmt.Println("Creating Directory :" + os.Getenv("HOME") + "/gArch")
-		os.Mkdir(os.Getenv("HOME")+"/gArch", 0700)
+		fmt.Println("Creating Directory :" + HomeDir)
+		os.Mkdir(HomeDir, 0700)
+		os.Mkdir(HomeDir+"/tmp", 0700)
+		os.Mkdir(HomeDir+"/meta", 0700)
+		os.Mkdir(HomeDir+"/blocks", 0700)
 		goto initwatcher
 	}
 
@@ -52,7 +65,7 @@ initwatcher:
 		}
 	}()
 
-	err = watcher.Add(os.Getenv("HOME") + "/gArch")
+	err = watcher.Add(HomeDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,29 +94,35 @@ func handleCreate(path string) {
 	}
 
 	fileInfo, _ := _file.Stat()
-	log.Println(fileInfo.Size())
+
 	var fileSize = fileInfo.Size()
-	const fileChunk = 1 * (1 << 20)
-	totalPartsNum := uint64(math.Ceil(float64(fileSize) / float64(fileChunk)))
-	fmt.Printf("Splitting to %d pieces.\n", totalPartsNum)
+	var fileName = fileInfo.Name()
 
-	for i := uint64(0); i < totalPartsNum; i++ {
+	if !fileInfo.IsDir() {
+		totalPartsNum := uint64(math.Ceil(float64(fileSize) / float64(fileChunk)))
+		fmt.Printf("Splitting to %d pieces.\n", totalPartsNum)
 
-		partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
-		partBuffer := make([]byte, partSize)
+		for i := uint64(0); i < totalPartsNum; i++ {
 
-		_file.Read(partBuffer)
+			partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
+			partBuffer := make([]byte, partSize)
 
-		fileName := os.Getenv("HOME") + "/gArch/chunks/chunk_" + strconv.FormatUint(i, 10)
-		_, err := os.Create(fileName)
+			_file.Read(partBuffer)
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fileName := HomeDir + "/tmp/" + fileName + "_chunk_" + strconv.FormatUint(i, 10)
+			_, err := os.Create(fileName)
+
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			ioutil.WriteFile(fileName, partBuffer, os.ModeAppend)
+
+			fmt.Println("Split to : ", fileName)
 		}
-
-		ioutil.WriteFile(fileName, partBuffer, os.ModeAppend)
-
-		fmt.Println("Split to : ", fileName)
+	} else {
+		log.Println(errors.New("Please archive the folder and then upload"))
 	}
+
 }
