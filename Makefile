@@ -11,6 +11,9 @@ run: clean
 dev : clean
 	go run main.go
 	
+proto : 
+	cd protos && protoc --go_out=. *.proto
+
 clean:
 	clear
 	@echo "\n -> Cleaning cache and log files\n" 
