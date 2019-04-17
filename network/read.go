@@ -7,9 +7,11 @@ import (
 	protos "github.com/sjljrvis/gArch/protos"
 )
 
-func (peer *Peer) read(msgChannel chan []byte) {
+func read(peer *Peer) {
 	defer peer.conn.Close()
+
 	data := make([]byte, 1024)
+
 	for {
 		len, err := peer.conn.Read(data)
 		if err != nil {
@@ -27,7 +29,11 @@ func (peer *Peer) read(msgChannel chan []byte) {
 
 		case "handshake":
 			peer.IP = (string(msg.GetData()))
-			log.Println("Connected to Peer :->", string(msg.GetData()), peer)
+			log.Println("Connected to Peer :->", string(msg.GetData()))
+			log.Println("Active Peers :->")
+			for i := range activePeers {
+				log.Print((*activePeers[i]).IP)
+			}
 
 		default:
 			log.Println("Default message")

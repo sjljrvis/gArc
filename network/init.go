@@ -11,14 +11,15 @@ import (
 
 // Peer Struct
 type Peer struct {
-	conn net.Conn
-	msg  chan []byte
-	IP   string
+	conn   net.Conn
+	msg    chan []byte
+	IP     string
+	active bool
 }
 
 var (
 	peerChannel = make(chan net.Conn)
-	activePeers = make(map[net.Conn]bool)
+	activePeers = []*Peer{}
 	msgChannel  = make(chan []byte)
 	activeIPs   = []string{}
 )
@@ -56,7 +57,17 @@ func Init(port int, peers []string) {
 		log.Fatal(err)
 	}
 
-	go connector(listener)
+	// go connector(listener)
+
+	go func() {
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				log.Fatal(err)
+			}
+			peerChannel <- conn
+		}
+	}()
 
 	if len(peers) > 0 {
 		go func() {
@@ -66,7 +77,6 @@ func Init(port int, peers []string) {
 					if err != nil {
 						log.Println("Peer disconnected ->", clientConn.RemoteAddr())
 						clientConn.Close()
-						activePeers[clientConn] = false
 						return
 					}
 					peerChannel <- clientConn
@@ -78,12 +88,19 @@ func Init(port int, peers []string) {
 	for {
 		select {
 		case conn := <-peerChannel:
-			activePeers[conn] = true
-			peer := &Peer{conn: conn}
-			go peer.read(msgChannel)
-			go peer.write(msgChannel)
-			handshake := initHandshake(selfAddress)
-			msgChannel <- handshake
+
+			var msgChan = make(chan []byte)
+			peer := &Peer{conn: conn, active: true, msg: msgChan}
+			activePeers = append(activePeers, peer)
+
+			go func(peer *Peer) {
+				handshake := initHandshake(selfAddress)
+				peer.msg <- handshake
+			}(peer)
+
+			go write(peer)
+			go read(peer)
+
 		}
 	}
 

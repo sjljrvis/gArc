@@ -7,9 +7,9 @@ import (
 	protos "github.com/sjljrvis/gArch/protos"
 )
 
-func (peer *Peer) write(msgChannel chan []byte) {
+func write(peer *Peer) {
 	for {
-		msg := <-msgChannel
+		msg := <-peer.msg
 		_msg := &protos.Arc{}
 		err := proto.Unmarshal(msg, _msg)
 		if err != nil {
