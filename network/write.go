@@ -5,11 +5,12 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	protos "github.com/sjljrvis/gArch/protos"
+	types "github.com/sjljrvis/gArch/types"
 )
 
-func write(peer *Peer) {
+func write(peer *types.Peer) {
 	for {
-		msg := <-peer.msg
+		msg := <-peer.Msg
 		_msg := &protos.Arc{}
 		err := proto.Unmarshal(msg, _msg)
 		if err != nil {
@@ -19,7 +20,7 @@ func write(peer *Peer) {
 		switch _msg.GetType() {
 
 		case "handshake":
-			peer.conn.Write(msg)
+			peer.Conn.Write(msg)
 
 		default:
 			log.Println("Default message")
