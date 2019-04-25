@@ -36,8 +36,8 @@ func fetchPeers() {
 
 func init() {
 	initLogger()
-	initDB()
-	fetchPeers()
+	// initDB()
+	// fetchPeers()
 }
 
 func main() {

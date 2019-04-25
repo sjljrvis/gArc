@@ -6,3 +6,7 @@ message  Arc {
    string type = 1;
    bytes data = 2;
 }
+
+message Gossip {
+   
+}
