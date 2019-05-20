@@ -89,8 +89,6 @@ func Init(port int, peers []string) {
 			peer := &types.Peer{Conn: conn, Active: true, Msg: msgChan}
 			activePeers = append(activePeers, peer)
 
-			log.Println("Active Peers", len(activePeers), conn.RemoteAddr())
-
 			go func(peer *types.Peer) {
 				handshake := initHandshake(selfAddress)
 				peer.Msg <- handshake
