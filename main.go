@@ -51,6 +51,7 @@ func main() {
 	peers := strings.Split(*peersFlag, ",")
 
 	log.Println("Peers can connect to address -> ", "127.0.0.1:", port)
+	log.Println("-> go run main.go -peers 127.0.0.1:", port, " -port <port>")
 
 	go network.Init(port, peers)
 	files.DirWatcher()
