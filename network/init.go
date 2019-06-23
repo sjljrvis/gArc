@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gogo/protobuf/proto"
+	uuid "github.com/satori/go.uuid"
 	protos "github.com/sjljrvis/gArch/protos"
 	store "github.com/sjljrvis/gArch/store"
 	types "github.com/sjljrvis/gArch/types"
@@ -86,10 +87,9 @@ func Init(port int, peers []string) {
 		case conn := <-peerChannel:
 
 			var msgChan = make(chan []byte)
-			peer := &types.Peer{Conn: conn, Active: true, Msg: msgChan}
+			peerID, _ := uuid.NewV4()
+			peer := &types.Peer{Conn: conn, Active: true, Msg: msgChan, ID: peerID}
 			activePeers = append(activePeers, peer)
-
-			log.Println("Active Peers", len(activePeers), conn.RemoteAddr())
 
 			go func(peer *types.Peer) {
 				handshake := initHandshake(selfAddress)
